@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <link rel="stylesheet" href="estilos.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link rel="icon" type="image/x-icon" href="/img/sena.png">
+    <title>REGISTRO</title>
+</head>
+<style>
+  body {
+     font-family: Arial, sans-serif;
+     margin: 0;
+     padding: 0;
+     background: url('img/fondoinicio.jpg') no-repeat center center fixed;
+     background-size: cover;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     height: 100vh;
+     text-align: center;
+ }
+ .title {
+     font-size: 4.5em;
+     color: #39A900;
+     margin-bottom: 20px;
+ }
+ .form-container {
+     display: flex;
+     justify-content: space-between;
+     width: 90%;
+     max-width: 1200px;
+     gap: 20px; /* Espacio entre los formularios */
+ }
+ .form-section {
+     flex: 1; /* Hace que los formularios se ajusten al espacio disponible */
+     padding: 20px;
+     border: 1px solid #ddd;
+     border-radius: 8px;
+     background-color: #f9f9f9;
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+ }
+ .form-section h2 {
+     color: #39A900;
+     margin-bottom: 20px;
+ }
+ .form-control {
+     margin-bottom: 15px;
+     display: flex;
+     flex-direction: column;
+ }
+ .form-control label {
+     margin-bottom: 5px;
+     font-weight: bold;
+ }
+ .form-control input {
+     padding: 10px;
+     border: 1px solid #ddd;
+     border-radius: 5px;
+     font-size: 16px;
+ }
+ .form-control input:focus {
+     border-color: #4a90e2;
+     outline: none;
+ }
+ .btn-ir-a-inicio {
+     background-color: #39A900;
+     color: white;
+     border: none;
+     padding: 10px 20px;
+     border-radius: 5px;
+     font-size: 16px;
+     cursor: pointer;
+     transition: background-color 0.3s;
+ }
+ .btn-ir-a-inicio:hover {
+     background-color: #39A900;
+ }
+
+ /* Estilos Responsivos */
+ @media (max-width: 768px) {
+     .form-container {
+         flex-direction: column;
+         align-items: center;
+     }
+     .form-section {
+         width: 100%;
+         max-width: 500px; /* Ancho máximo para pantallas pequeñas */
+     }
+     .title {
+         font-size: 2em;
+     }
+ }
+ @media (max-width: 480px) {
+     .title {
+         font-size: 1.5em;
+     }
+     .form-section {
+         padding: 15px;
+     }
+     .btn-ir-a-inicio {
+         font-size: 14px;
+         padding: 8px 16px;
+     }
+ }
+</style>
+<script>
+ async function autenticarAdmin() {
+     const usuarioAdmin = document.getElementById('usuarioAdmin').value;
+     const contraseñaAdmin = document.getElementById('contraseñaAdmin').value;
+
+     const response = await fetch('http://127.0.0.1:5000/autenticar_admin', {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({ usuario: usuarioAdmin, contraseña: contraseñaAdmin })
+     });
+
+     const data = await response.json();
+     if (data.status === 'success') {
+         localStorage.setItem('token', data.token);
+         window.location.href = 'index.html'; // Redirige al formulario de registro de usuario
+     } else {
+         alert(data.message);
+     }
+ }
+
+ async function loginUsuario() {
+     const Nombres = document.getElementById('nombres').value;
+     const Direccion = document.getElementById('direccion').value;
+     const Barrio = document.getElementById('barrio').value;
+     const Estrato = document.getElementById('estrato').value;
+     const Tipo_de_identificacion = document.getElementById('tipo de identificacion').value;
+     const Telefono = document.getElementById('telefono').value;
+     const correo = document.getElementById('correo').value;
+     const Contraseña = document.getElementById('contraseña').value;
+
+
+
+     const response = await fetch('http://127.0.0.1:5000/login_usuario', {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({ usuario, contraseña })
+     });
+
+     const data = await response.json();
+     if (data.status === 'success') {
+         alert('Registro exitoso');
+         window.location.href = 'inicio_secion.html'; 
+     } else {
+         alert(data.message);
+     }
+ }
+
+ function mostrarRestablecimiento() {
+     document.getElementById('restablecerContraseña').style.display = 'block';
+ }
+
+ async function solicitarRestablecimiento() {
+     const email = document.getElementById('emailRestablecer').value;
+
+     const response = await fetch('http://127.0.0.1:5000/restablecer_contraseña', {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({ email })
+     });
+
+     const data = await response.json();
+     alert(data.message);
+ }
+
+</script>
+<body>
+    <!--registro-->
+        <section class="form-section user-form">
+          <h2>REGISTRO DE USUARIOS</h2>
+          <form onsubmit="event.preventDefault(); loginUsuario();">
+              <div class="form-control">
+                  <label for="nombres"><b>Nombres:</b></label>
+                  <input type="text" id="nombres" placeholder="Ingrese sus Nombres" name="nombres" required>
+              </div>
+              <div class="form-control">
+                <label for="direccion"><b>Direccion:</b></label>
+                <input type="text" id="direeccion" placeholder="Ingrese su Direccion" name="direccion" required>
+            </div>
+            <div class="form-control">
+              <label for="barrio"><b>Barrio:</b></label>
+              <input type="text" id="barrio" placeholder="Ingrese su Barrio" name="barrio" required>
+          </div>
+          <div class="form-control">
+            <label for="estrato"><b>Estrato:</b></label>
+            <input type="text" id="estrato" placeholder="Ingrese su estrato" name="estrato" required>
+        </div>
+        <div class="form-control">
+          <label for="tipo de identificacion"><b>Tipo de Identificacion:</b></label>
+          <select class="form-control" id="tipo de identificacion" name="tipo de identificacion">
+            <option value="documento">Cdeula de ciudadania</option>
+            <option value="contrato">Targeta de Identidad</option>
+            <option value="certificado">Ceduls de Extrangeria</option>  
+          </select>
+        </div>
+
+        <div class="form-control">
+          <label for="telefono"><b>Telefono:</b></label>
+          <input type="number" id="telefono" placeholder="Ingrese su Numero de Telefono" name="telefono" required>
+      </div>
+      <div class="form-control">
+        <label for="Correo"><b>Correo:</b></label>
+        <input type="email" id="correo" placeholder="Ingrese Correo" name="correo" required>
+    </div>
+
+       <div class="form-control">
+                  <label for="contraseña"><b>Contraseña:</b></label>
+                  <input type="password" id="contraseña" placeholder="Ingrese Contraseña" name="password" required>
+              </div>
+              <a id="Registar" type="submit" class="btn-ir-a-inicio" href="inicio_secion.html">REGISTRAR</a>
+              <a href="recuperar_contraseña.html" class="btn-restablecer">Olvidaste tu contraseña</a>
+          </form>
+      </section>
+</body>
+</html>
